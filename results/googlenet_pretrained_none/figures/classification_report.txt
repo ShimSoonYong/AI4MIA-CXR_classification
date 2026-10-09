@@ -1,0 +1,9 @@
+                 precision    recall  f1-score   support
+
+         Normal     0.9980    0.9951    0.9966      1019
+Viral Pneumonia     0.9925    0.9852    0.9888       135
+       COVID-19     0.9863    0.9972    0.9917       361
+
+       accuracy                         0.9947      1515
+      macro avg     0.9923    0.9925    0.9924      1515
+   weighted avg     0.9947    0.9947    0.9947      1515

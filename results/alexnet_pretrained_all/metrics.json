@@ -1,0 +1,33 @@
+{
+    "Normal": {
+        "precision": 0.6726072607260726,
+        "recall": 1.0,
+        "f1-score": 0.8042620363062352,
+        "support": 1019.0
+    },
+    "Viral Pneumonia": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 135.0
+    },
+    "COVID-19": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 361.0
+    },
+    "accuracy": 0.6726072607260726,
+    "macro avg": {
+        "precision": 0.2242024202420242,
+        "recall": 0.3333333333333333,
+        "f1-score": 0.26808734543541174,
+        "support": 1515.0
+    },
+    "weighted avg": {
+        "precision": 0.45240052718143103,
+        "recall": 0.6726072607260726,
+        "f1-score": 0.54095248514591,
+        "support": 1515.0
+    }
+}

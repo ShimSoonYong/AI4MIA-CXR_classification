@@ -1,8 +1,13 @@
 dataset/*
 */.ipynb_checkpoints/*
+figures/*
 .vscode/*
 *.zip
-figures/*
-results/*
+*/checkpoints/*
 */__pycache__/*
 src/test_results/*
+report.html
+report.md
+*.png
+*.pt
+*.pth
