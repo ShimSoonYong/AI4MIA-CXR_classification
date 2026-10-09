@@ -1,0 +1,33 @@
+{
+  "name": "ai4mia",
+  "build": {
+      "dockerfile": "../Dockerfile",
+      "context": ".."
+    },
+  "workspaceFolder": "/workspace",
+  
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
+  
+  "forwardPorts": [8888],
+  
+  "runArgs": [
+    "--ipc=host",
+    "--gpus=all",
+    "--ulimit", "nproc=-1:-1",
+    "--ulimit", "memlock=-1:-1",
+    "--ulimit", "core=-1:-1",
+    "--name=ai4mia_assignment"
+  ],
+
+  "postCreateCommand": "echo 'Dev Container is ready.'",
+  
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-toolsai.jupyter",
+        "vscodevim.vim"
+      ]
+    }
+  }
+}

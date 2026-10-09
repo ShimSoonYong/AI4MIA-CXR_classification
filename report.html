@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Code</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <span id="markdown-mermaid" aria-hidden="true" data-config="{&quot;darkModeTheme&quot;:&quot;vscode&quot;,&quot;lightModeTheme&quot;:&quot;vscode&quot;,&quot;maxTextSize&quot;:50000,&quot;clickDrag&quot;:&quot;alt&quot;,&quot;showControls&quot;:&quot;onHoverOrFocus&quot;,&quot;resizable&quot;:true,&quot;maxHeight&quot;:&quot;&quot;}"></span>
+				<h1 id="code">Code</h1>
+<p>The workspace directory is structured as illustrated below.
+<img src="file:///c:\Users\ttaaa\Desktop\2026_2학기\AI4MIA\assignment1\source\workspace.png" alt="workspace"></p>
+<p>The source scripts are located within the <code>src</code> folder, as shown below.
+<img src="file:///c:\Users\ttaaa\Desktop\2026_2학기\AI4MIA\assignment1\source\sources.png" alt="src"></p>
+<p>All models were trained for 20 epochs, which proved sufficient to achieve satisfactory accuracy.</p>
+<h2 id="modelspy"><a href="http://models.py">models.py</a></h2>
+<p>Convenient model classes from the <code>torchvision.models</code> module were utilized. Because the models were pretrained on ImageNet, a new <code>nn.Linear</code> layer was appended as the final layer to match the target number of classes.</p>
+<pre><code class="language-py"><span class="hljs-keyword">import</span> torch
+<span class="hljs-keyword">import</span> torch.nn <span class="hljs-keyword">as</span> nn
+<span class="hljs-keyword">import</span> torchvision.models <span class="hljs-keyword">as</span> models
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">MedicalImageClassifier</span>(nn.Module):
+    <span class="hljs-string">&quot;&quot;&quot;
+    Unified model class
+    &quot;&quot;&quot;</span>
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, model_name: <span class="hljs-built_in">str</span> = <span class="hljs-string">&#x27;resnet&#x27;</span>, pretrained: <span class="hljs-built_in">bool</span> = <span class="hljs-literal">True</span>, num_classes: <span class="hljs-built_in">int</span> = <span class="hljs-number">3</span></span>):
+        <span class="hljs-built_in">super</span>(MedicalImageClassifier, self).__init__()
+        self.model_name = model_name.lower()
+        self.pretrained = pretrained
+        self.num_classes = num_classes
+
+        self.model = self._build_model()
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">_build_model</span>(<span class="hljs-params">self</span>):
+        <span class="hljs-comment"># 1. AlexNet</span>
+        <span class="hljs-keyword">if</span> self.model_name == <span class="hljs-string">&#x27;alexnet&#x27;</span>:
+            weights = models.AlexNet_Weights.DEFAULT <span class="hljs-keyword">if</span> self.pretrained <span class="hljs-keyword">else</span> <span class="hljs-literal">None</span>
+            model = models.alexnet(weights=weights)
+            in_features = model.classifier[<span class="hljs-number">6</span>].in_features
+            model.classifier[<span class="hljs-number">6</span>] = nn.Linear(in_features, self.num_classes)
+
+        <span class="hljs-comment"># 2. ResNet</span>
+        <span class="hljs-keyword">elif</span> self.model_name == <span class="hljs-string">&#x27;resnet&#x27;</span>:
+            weights = models.ResNet50_Weights.DEFAULT <span class="hljs-keyword">if</span> self.pretrained <span class="hljs-keyword">else</span> <span class="hljs-literal">None</span>
+            model = models.resnet50(weights=weights)
+            in_features = model.fc.in_features
+            model.fc = nn.Linear(in_features, self.num_classes)
+
+        <span class="hljs-comment"># 3. GoogLeNet</span>
+        <span class="hljs-keyword">elif</span> self.model_name == <span class="hljs-string">&#x27;googlenet&#x27;</span>:
+            weights = models.GoogLeNet_Weights.DEFAULT <span class="hljs-keyword">if</span> self.pretrained <span class="hljs-keyword">else</span> <span class="hljs-literal">None</span>
+            model = models.googlenet(weights=weights, aux_logits=<span class="hljs-literal">True</span>)
+
+            in_features = model.fc.in_features
+            model.fc = nn.Linear(in_features, self.num_classes)
+
+            model.aux1.fc2 = nn.Linear(model.aux1.fc2.in_features, self.num_classes)
+            model.aux2.fc2 = nn.Linear(model.aux2.fc2.in_features, self.num_classes)
+        <span class="hljs-keyword">else</span>:
+            <span class="hljs-keyword">raise</span> ValueError(<span class="hljs-string">f&quot;Unsupported model: <span class="hljs-subst">{self.model_name}</span>. Choose one of &#x27;alexnet&#x27;, &#x27;resnet&#x27;, &#x27;googlenet&#x27;&quot;</span>)
+
+        <span class="hljs-keyword">return</span> model
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">forward</span>(<span class="hljs-params">self, x</span>):
+        <span class="hljs-keyword">return</span> self.model(x)
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">compute_loss</span>(<span class="hljs-params">self, outputs, labels, criterion</span>):
+        <span class="hljs-string">&quot;&quot;&quot;
+        Model specific loss computation 
+        &quot;&quot;&quot;</span>
+        <span class="hljs-keyword">if</span> self.model_name == <span class="hljs-string">&#x27;googlenet&#x27;</span> <span class="hljs-keyword">and</span> self.training:
+            <span class="hljs-comment"># GoogLeNetOutputs or tuple: (main, aux2, aux1)</span>
+            main_out, aux2_out, aux1_out = outputs
+            loss_main = criterion(main_out, labels)
+            loss_aux2 = criterion(aux2_out, labels)
+            loss_aux1 = criterion(aux1_out, labels)
+            
+            <span class="hljs-keyword">return</span> loss_main + <span class="hljs-number">0.3</span> * loss_aux2 + <span class="hljs-number">0.3</span> * loss_aux1
+            
+        <span class="hljs-keyword">return</span> criterion(outputs, labels)
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">get_predictions</span>(<span class="hljs-params">self, outputs</span>):
+        <span class="hljs-string">&quot;&quot;&quot;
+        Logit extraction to compute final accuracy
+        &quot;&quot;&quot;</span>
+        <span class="hljs-keyword">if</span> self.model_name == <span class="hljs-string">&#x27;googlenet&#x27;</span> <span class="hljs-keyword">and</span> self.training:
+            <span class="hljs-keyword">return</span> outputs[<span class="hljs-number">0</span>]
+            
+        <span class="hljs-keyword">return</span> outputs
+</code></pre>
+<p>Since GoogLeNet incorporates auxiliary outputs for auxiliary losses, a dedicated <code>compute_loss</code> method is required to handle them appropriately.</p>
+<h2 id="trainpy"><a href="http://train.py">train.py</a></h2>
+<p>The <code>Trainer</code> class manages the comprehensive training and validation loops, along with logging functionalities. In addition to standard procedures, extended evaluation metrics and visual figures were incorporated to facilitate a deeper, more rigorous analysis of model behavior and internal learning dynamics.</p>
+<pre><code class="language-py"><span class="hljs-keyword">import</span> os
+<span class="hljs-keyword">import</span> json
+<span class="hljs-keyword">import</span> torch
+<span class="hljs-keyword">import</span> torch.nn <span class="hljs-keyword">as</span> nn
+<span class="hljs-keyword">import</span> torch.nn.functional <span class="hljs-keyword">as</span> F
+<span class="hljs-keyword">from</span> torch.utils.data <span class="hljs-keyword">import</span> DataLoader, TensorDataset
+<span class="hljs-keyword">from</span> tqdm <span class="hljs-keyword">import</span> tqdm
+<span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+<span class="hljs-keyword">from</span> sklearn.metrics <span class="hljs-keyword">import</span> classification_report
+
+<span class="hljs-keyword">from</span> utils <span class="hljs-keyword">import</span> MetricTracker, ModelEvaluator, FeatureMapLogger, log_parameter_histograms
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">Trainer</span>:
+    <span class="hljs-string">&quot;&quot;&quot;
+    Unified class for train, validation, test, and logging.
+    &quot;&quot;&quot;</span>
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, model: nn.Module, train_loader: DataLoader, val_loader: DataLoader,
+                 criterion: nn.Module, optimizer: torch.optim.Optimizer, device: torch.device,
+                 class_names: <span class="hljs-built_in">list</span>, num_epochs: <span class="hljs-built_in">int</span> = <span class="hljs-number">20</span>, save_dir: <span class="hljs-built_in">str</span> = <span class="hljs-string">&quot;results&quot;</span>,
+                 feature_layer: nn.Module = <span class="hljs-literal">None</span></span>):
+        <span class="hljs-string">&quot;&quot;&quot;
+        Args:
+            model (nn.Module): PyTorch model to train
+            train_loader (DataLoader): Train data loader
+            val_loader (DataLoader): Validation data loader
+            criterion (nn.Module): Loss function
+            optimizer (torch.optim.Optimizer): Optimizer
+            device (torch.device): Hardware (CPU or CUDA)
+            class_names (list): Class names of target
+            num_epochs (int): Total training epochs
+            save_dir (str): Result saving path (Default: &quot;results&quot;)
+            feature_layer (nn.Module, optional): A layer to extract and visualize a feature map
+        &quot;&quot;&quot;</span>
+        self.model = model.to(device)
+        self.train_loader = train_loader
+        self.val_loader = val_loader
+        self.criterion = criterion
+        self.optimizer = optimizer
+        self.device = device
+        self.class_names = class_names
+        self.num_epochs = num_epochs
+        
+        self.results_dir = save_dir
+        self.checkpoints_dir = os.path.join(self.results_dir, <span class="hljs-string">&quot;checkpoints&quot;</span>)
+        self.figures_dir = os.path.join(self.results_dir, <span class="hljs-string">&quot;figures&quot;</span>)
+        
+        os.makedirs(self.checkpoints_dir, exist_ok=<span class="hljs-literal">True</span>)
+        os.makedirs(self.figures_dir, exist_ok=<span class="hljs-literal">True</span>)
+        
+        self.best_model_path = os.path.join(self.checkpoints_dir, <span class="hljs-string">&quot;best_model.pth&quot;</span>)
+        
+        self.metric_tracker = MetricTracker(save_dir=self.figures_dir)
+        self.evaluator = ModelEvaluator(class_names=class_names, save_dir=self.figures_dir)
+        
+        self.feature_logger = <span class="hljs-literal">None</span>
+        <span class="hljs-keyword">if</span> feature_layer <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:
+            self.feature_logger = FeatureMapLogger(feature_layer, save_dir=self.figures_dir)
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">_train_epoch</span>(<span class="hljs-params">self</span>):
+        self.model.train()
+        running_loss = <span class="hljs-number">0.0</span>
+        correct = <span class="hljs-number">0</span>
+        total = <span class="hljs-number">0</span>
+        
+        pbar = tqdm(self.train_loader, desc=<span class="hljs-string">&quot;Training&quot;</span>, leave=<span class="hljs-literal">False</span>)
+        <span class="hljs-keyword">for</span> inputs, labels <span class="hljs-keyword">in</span> pbar:
+            inputs, labels = inputs.to(self.device), labels.to(self.device)
+            
+            self.optimizer.zero_grad()
+            outputs = self.model(inputs)
+            <span class="hljs-comment">#loss = self.criterion(outputs, labels)</span>
+            loss = self.model.compute_loss(outputs, labels, self.criterion)
+            
+            loss.backward()
+            self.optimizer.step()
+            
+            running_loss += loss.item() * inputs.size(<span class="hljs-number">0</span>)
+            <span class="hljs-comment">#_, predicted = torch.max(outputs, 1)</span>
+            preds_out = self.model.get_predictions(outputs)
+            _, predicted = torch.<span class="hljs-built_in">max</span>(preds_out, <span class="hljs-number">1</span>)
+            total += labels.size(<span class="hljs-number">0</span>)
+            correct += (predicted == labels).<span class="hljs-built_in">sum</span>().item()
+            
+            pbar.set_postfix({<span class="hljs-string">&quot;Loss&quot;</span>: <span class="hljs-string">f&quot;<span class="hljs-subst">{loss.item():<span class="hljs-number">.4</span>f}</span>&quot;</span>})
+            
+        <span class="hljs-keyword">return</span> running_loss / total, correct / total
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">_validate_epoch</span>(<span class="hljs-params">self, return_predictions=<span class="hljs-literal">False</span></span>):
+        self.model.<span class="hljs-built_in">eval</span>()
+        running_loss = <span class="hljs-number">0.0</span>
+        correct = <span class="hljs-number">0</span>
+        total = <span class="hljs-number">0</span>
+        
+        all_labels = []
+        all_preds = []
+        all_probs = []
+        
+        <span class="hljs-keyword">with</span> torch.no_grad():
+            pbar = tqdm(self.val_loader, desc=<span class="hljs-string">&quot;Validating&quot;</span>, leave=<span class="hljs-literal">False</span>)
+            <span class="hljs-keyword">for</span> inputs, labels <span class="hljs-keyword">in</span> pbar:
+                inputs, labels = inputs.to(self.device), labels.to(self.device)
+                outputs = self.model(inputs)
+                loss = self.criterion(outputs, labels)
+                
+                running_loss += loss.item() * inputs.size(<span class="hljs-number">0</span>)
+                probs = F.softmax(outputs, dim=<span class="hljs-number">1</span>)
+                _, predicted = torch.<span class="hljs-built_in">max</span>(outputs, <span class="hljs-number">1</span>)
+                
+                total += labels.size(<span class="hljs-number">0</span>)
+                correct += (predicted == labels).<span class="hljs-built_in">sum</span>().item()
+                
+                <span class="hljs-keyword">if</span> return_predictions:
+                    all_labels.extend(labels.cpu().numpy())
+                    all_preds.extend(predicted.cpu().numpy())
+                    all_probs.extend(probs.cpu().numpy())
+                    
+        epoch_loss = running_loss / total
+        epoch_acc = correct / total
+        
+        <span class="hljs-keyword">if</span> return_predictions:
+            <span class="hljs-keyword">return</span> epoch_loss, epoch_acc, np.array(all_labels), np.array(all_preds), np.array(all_probs)
+        <span class="hljs-keyword">return</span> epoch_loss, epoch_acc
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">fit</span>(<span class="hljs-params">self</span>):
+        <span class="hljs-string">&quot;&quot;&quot;Run training and validation loop.&quot;&quot;&quot;</span>
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;--- Traning start (Device: <span class="hljs-subst">{self.device}</span>, Epochs: <span class="hljs-subst">{self.num_epochs}</span>) ---&quot;</span>)
+        best_val_acc = <span class="hljs-number">0.0</span>
+        
+        <span class="hljs-keyword">for</span> epoch <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, self.num_epochs + <span class="hljs-number">1</span>):
+            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;\nEpoch <span class="hljs-subst">{epoch}</span>/<span class="hljs-subst">{self.num_epochs}</span>&quot;</span>)
+            
+            train_loss, train_acc = self._train_epoch()
+            val_loss, val_acc = self._validate_epoch()
+            
+            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Train Loss: <span class="hljs-subst">{train_loss:<span class="hljs-number">.4</span>f}</span> | Train Acc: <span class="hljs-subst">{train_acc:<span class="hljs-number">.4</span>f}</span>&quot;</span>)
+            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Val Loss:   <span class="hljs-subst">{val_loss:<span class="hljs-number">.4</span>f}</span> | Val Acc:   <span class="hljs-subst">{val_acc:<span class="hljs-number">.4</span>f}</span>&quot;</span>)
+            
+            <span class="hljs-comment"># Record metrics</span>
+            self.metric_tracker.update(epoch, train_loss, val_loss, train_acc, val_acc)
+            
+            <span class="hljs-comment"># Parameter histograms</span>
+            log_parameter_histograms(self.model, epoch, save_dir=self.figures_dir)
+            
+            <span class="hljs-comment"># Feature maps</span>
+            <span class="hljs-keyword">if</span> self.feature_logger <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:
+                self.feature_logger.plot_feature_map(epoch_or_name=<span class="hljs-string">f&quot;epoch_<span class="hljs-subst">{epoch}</span>&quot;</span>)
+            
+            <span class="hljs-comment"># Save best modelse</span>
+            <span class="hljs-keyword">if</span> val_acc &gt; best_val_acc:
+                best_val_acc = val_acc
+                torch.save(self.model.state_dict(), self.best_model_path)
+                <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;[*] Best model saved at epoch <span class="hljs-subst">{epoch}</span> with Val Acc: <span class="hljs-subst">{best_val_acc:<span class="hljs-number">.4</span>f}</span>&quot;</span>)
+                
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;--- Training finished ---&quot;</span>)
+        
+        <span class="hljs-comment"># 1. Learning curve plot</span>
+        self.metric_tracker.save_and_plot()
+        
+        <span class="hljs-comment"># 2. Final metrics as json</span>
+        self._evaluate_final_model()
+
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">_evaluate_final_model</span>(<span class="hljs-params">self</span>):
+        <span class="hljs-string">&quot;&quot;&quot;Load best model and create metrics.json&quot;&quot;&quot;</span>
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;--- Final model evaluation ---&quot;</span>)
+        self.model.load_state_dict(torch.load(self.best_model_path))
+        
+        _, _, y_true, y_pred, y_prob = self._validate_epoch(return_predictions=<span class="hljs-literal">True</span>)
+        
+        self.evaluator.evaluate(y_true, y_pred, y_prob)
+        
+        report_dict = classification_report(y_true, y_pred, target_names=self.class_names, output_dict=<span class="hljs-literal">True</span>)
+        metrics_path = os.path.join(self.results_dir, <span class="hljs-string">&quot;metrics.json&quot;</span>)
+        
+        <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(metrics_path, <span class="hljs-string">&quot;w&quot;</span>, encoding=<span class="hljs-string">&quot;utf-8&quot;</span>) <span class="hljs-keyword">as</span> f:
+            json.dump(report_dict, f, indent=<span class="hljs-number">4</span>, ensure_ascii=<span class="hljs-literal">False</span>)
+            
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;[Complete] Final metrics saved at: <span class="hljs-subst">{metrics_path}</span>&quot;</span>)
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;[Complete] Checkpoint and visualization saved at &#x27;<span class="hljs-subst">{self.results_dir}</span>/&#x27;&quot;</span>)
+        
+        <span class="hljs-keyword">if</span> self.feature_logger <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:
+            self.feature_logger.remove_hook()
+</code></pre>
+<h2 id="datasetpy"><a href="http://dataset.py">dataset.py</a></h2>
+<p><code>ProcessedDataset</code> is a simple wrapper class that is compatible with PyTorch's <code>DataLoader</code> class. The <code>load_data</code> function is designed to cache preprocessed datasets in <code>.pt</code> format for fast loading. Furthermore, since the raw class labels from <code>ImageFolder</code> differ from the specific conditions of the assignment, label remapping logic is also included.</p>
+<p>To address the class imbalance, the <code>get_loaders</code> function returns data loaders configured with a stratified train-validation-test split.</p>
+<pre><code class="language-py"><span class="hljs-keyword">import</span> os
+<span class="hljs-keyword">import</span> torch
+<span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+<span class="hljs-keyword">from</span> torchvision <span class="hljs-keyword">import</span> datasets, transforms
+<span class="hljs-keyword">from</span> torch.utils.data <span class="hljs-keyword">import</span> DataLoader, Subset, Dataset
+<span class="hljs-keyword">from</span> sklearn.model_selection <span class="hljs-keyword">import</span> train_test_split
+
+<span class="hljs-comment"># configuration variables</span>
+DATA_ROOT = <span class="hljs-string">&quot;dataset&quot;</span>
+RAW_DIR = os.path.join(DATA_ROOT, <span class="hljs-string">&quot;raw&quot;</span>)
+PROCESSED_DIR = os.path.join(DATA_ROOT, <span class="hljs-string">&quot;processed&quot;</span>)
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">ProcessedDataset</span>(<span class="hljs-title class_ inherited__">Dataset</span>):
+    <span class="hljs-string">&quot;&quot;&quot;Wrapper class to read saved .pt tensor dataset&quot;&quot;&quot;</span>
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, data_dict</span>):
+        self.images = data_dict[<span class="hljs-string">&#x27;images&#x27;</span>]
+        self.targets = data_dict[<span class="hljs-string">&#x27;labels&#x27;</span>]
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__len__</span>(<span class="hljs-params">self</span>):
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">len</span>(self.images)
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__getitem__</span>(<span class="hljs-params">self, idx</span>):
+        <span class="hljs-keyword">return</span> self.images[idx], self.targets[idx]
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">load_data</span>(<span class="hljs-params">raw_dir: <span class="hljs-built_in">str</span>, processed_dir: <span class="hljs-built_in">str</span>, transform=<span class="hljs-literal">None</span>, use_saved: <span class="hljs-built_in">bool</span> = <span class="hljs-literal">True</span>, save_processed: <span class="hljs-built_in">bool</span> = <span class="hljs-literal">False</span></span>):
+    <span class="hljs-string">&quot;&quot;&quot;
+    main function to load dataset
+    - use_saved=True: If saved .pt file exists, than load that.
+    - save_processed=True: When load raw data, transform and save them to the .pt tensors to load faster later.
+    &quot;&quot;&quot;</span>
+    processed_path = os.path.join(processed_dir, <span class="hljs-string">&quot;processed_dataset.pt&quot;</span>)
+
+    <span class="hljs-keyword">if</span> use_saved <span class="hljs-keyword">and</span> os.path.exists(processed_path):
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;---Loading saved .pt tensor dataset: <span class="hljs-subst">{processed_path}</span> ---&quot;</span>)
+        data = torch.load(processed_path)
+        <span class="hljs-keyword">return</span> ProcessedDataset(data)
+
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;--- Loading raw dataset: <span class="hljs-subst">{raw_dir}</span> ---&quot;</span>)
+    dataset = datasets.ImageFolder(root=raw_dir, transform=transform)
+    
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Remapping class labels&quot;</span>)
+    orig_idx_covid = dataset.class_to_idx[<span class="hljs-string">&#x27;COVID&#x27;</span>]
+    orig_idx_normal = dataset.class_to_idx[<span class="hljs-string">&#x27;Normal&#x27;</span>]
+    orig_idx_viral = dataset.class_to_idx[<span class="hljs-string">&#x27;Viral Pneumonia&#x27;</span>]
+    
+    mapping = {
+        orig_idx_normal: <span class="hljs-number">0</span>,
+        orig_idx_viral: <span class="hljs-number">1</span>,
+        orig_idx_covid: <span class="hljs-number">2</span>
+    }
+    
+    dataset.targets = [mapping[t] <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> dataset.targets]
+    dataset.samples = [(path, mapping[t]) <span class="hljs-keyword">for</span> path, t <span class="hljs-keyword">in</span> dataset.samples]
+    dataset.classes = [<span class="hljs-string">&#x27;Normal&#x27;</span>, <span class="hljs-string">&#x27;Viral pneumonia&#x27;</span>, <span class="hljs-string">&#x27;COVID-19&#x27;</span>]
+    dataset.class_to_idx = {<span class="hljs-string">&#x27;Normal&#x27;</span>: <span class="hljs-number">0</span>, <span class="hljs-string">&#x27;Viral pneumonia&#x27;</span>: <span class="hljs-number">1</span>, <span class="hljs-string">&#x27;COVID-19&#x27;</span>: <span class="hljs-number">2</span>}
+
+    <span class="hljs-keyword">if</span> save_processed:
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;--- Saving processed .pt data at <span class="hljs-subst">{processed_dir}</span> folder... ---&quot;</span>)
+        os.makedirs(processed_dir, exist_ok=<span class="hljs-literal">True</span>)
+        
+        images, labels = [], []
+        <span class="hljs-keyword">for</span> img, label <span class="hljs-keyword">in</span> dataset:
+            images.append(img)
+            labels.append(label)
+            
+        torch.save({
+            <span class="hljs-string">&#x27;images&#x27;</span>: torch.stack(images),
+            <span class="hljs-string">&#x27;labels&#x27;</span>: torch.tensor(labels)
+        }, processed_path) 
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;.pt tensor dataset saved at: <span class="hljs-subst">{processed_path}</span>&quot;</span>)
+    <span class="hljs-keyword">else</span>:
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Dataset will be processed by DataLoader&quot;</span>)
+        
+    <span class="hljs-keyword">return</span> dataset
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">get_loaders</span>(<span class="hljs-params">dataset, split_ratio: <span class="hljs-built_in">dict</span> = <span class="hljs-literal">None</span>, batch_size: <span class="hljs-built_in">int</span> = <span class="hljs-number">32</span>, num_workers: <span class="hljs-built_in">int</span> = <span class="hljs-number">4</span></span>):
+    <span class="hljs-string">&quot;&quot;&quot;
+    Stratified Split for class imbalance and instantiate DataLoader
+    &quot;&quot;&quot;</span>
+    <span class="hljs-keyword">if</span> split_ratio <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:
+        split_ratio = {<span class="hljs-string">&#x27;train&#x27;</span>: <span class="hljs-number">0.8</span>, <span class="hljs-string">&#x27;val&#x27;</span>: <span class="hljs-number">0.2</span>, <span class="hljs-string">&#x27;test&#x27;</span>: <span class="hljs-number">0.0</span>}
+
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Dataset split ratio: <span class="hljs-subst">{split_ratio}</span>&quot;</span>)
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Batch Size: <span class="hljs-subst">{batch_size}</span>, Num Workers: <span class="hljs-subst">{num_workers}</span>&quot;</span>)
+    
+    targets = np.array(dataset.targets)
+    indices = np.arange(<span class="hljs-built_in">len</span>(dataset))
+    
+    train_ratio = split_ratio.get(<span class="hljs-string">&#x27;train&#x27;</span>, <span class="hljs-number">0.8</span>)
+    val_ratio = split_ratio.get(<span class="hljs-string">&#x27;val&#x27;</span>, <span class="hljs-number">0.2</span>)
+    test_ratio = split_ratio.get(<span class="hljs-string">&#x27;test&#x27;</span>, <span class="hljs-number">0.0</span>)
+
+    <span class="hljs-keyword">try</span>:
+        <span class="hljs-keyword">if</span> test_ratio &gt; <span class="hljs-number">0.0</span>:
+            train_idx, temp_idx, _, temp_targets = train_test_split(
+                indices, targets,
+                stratify=targets,
+                test_size=(val_ratio + test_ratio),
+                random_state=<span class="hljs-number">42</span>
+            )
+            val_idx, test_idx = train_test_split(
+                temp_idx,
+                stratify=temp_targets,
+                test_size=(test_ratio / (val_ratio + test_ratio)),
+                random_state=<span class="hljs-number">42</span>
+            )
+        <span class="hljs-keyword">else</span>:
+            train_idx, val_idx = train_test_split(
+                indices,
+                stratify=targets,
+                test_size=val_ratio,
+                random_state=<span class="hljs-number">42</span>
+            )
+            test_idx = []
+
+        train_dataset = Subset(dataset, train_idx)
+        val_dataset = Subset(dataset, val_idx)
+        test_dataset = Subset(dataset, test_idx) <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(test_idx) &gt; <span class="hljs-number">0</span> <span class="hljs-keyword">else</span> <span class="hljs-literal">None</span>
+
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Splitted as: Train=<span class="hljs-subst">{<span class="hljs-built_in">len</span>(train_dataset)}</span>, Val=<span class="hljs-subst">{<span class="hljs-built_in">len</span>(val_dataset)}</span>, Test=<span class="hljs-subst">{<span class="hljs-built_in">len</span>(test_dataset) <span class="hljs-keyword">if</span> test_dataset <span class="hljs-keyword">else</span> <span class="hljs-number">0</span>}</span>&quot;</span>)
+
+        loaders = {
+            <span class="hljs-string">&quot;train_loader&quot;</span>: DataLoader(train_dataset, batch_size=batch_size, shuffle=<span class="hljs-literal">True</span>, num_workers=num_workers, pin_memory=<span class="hljs-literal">True</span>),
+            <span class="hljs-string">&quot;val_loader&quot;</span>: DataLoader(val_dataset, batch_size=batch_size, shuffle=<span class="hljs-literal">False</span>, num_workers=num_workers, pin_memory=<span class="hljs-literal">True</span>)
+        }
+        
+        <span class="hljs-keyword">if</span> test_dataset:
+            loaders[<span class="hljs-string">&quot;test_loader&quot;</span>] = DataLoader(test_dataset, batch_size=batch_size, shuffle=<span class="hljs-literal">False</span>, num_workers=num_workers, pin_memory=<span class="hljs-literal">True</span>)
+
+        <span class="hljs-keyword">return</span> loaders
+
+    <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Error during dataset split: <span class="hljs-subst">{e}</span>&quot;</span>)
+        <span class="hljs-keyword">raise</span> RuntimeError(<span class="hljs-string">&quot;Failed to instantiate Stratified DataLoader&quot;</span>)
+</code></pre>
+<h2 id="utilspy"><a href="http://utils.py">utils.py</a></h2>
+<p>This script is dedicated to logging and metrics evaluation. It utilizes designated objects to record and generate a comprehensive set of outputs, including losses, accuracies, classification reports, confusion matrices, ROC curves, PR curves, intermediate feature maps, and parameter histograms.</p>
+<pre><code class="language-py"><span class="hljs-keyword">import</span> os
+<span class="hljs-keyword">import</span> torch
+<span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+<span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
+<span class="hljs-keyword">import</span> matplotlib
+matplotlib.use(<span class="hljs-string">&#x27;Agg&#x27;</span>)
+<span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+<span class="hljs-keyword">import</span> seaborn <span class="hljs-keyword">as</span> sns
+<span class="hljs-keyword">from</span> sklearn.metrics <span class="hljs-keyword">import</span> (
+    classification_report, confusion_matrix, 
+    roc_curve, auc, precision_recall_curve
+)
+<span class="hljs-keyword">from</span> sklearn.preprocessing <span class="hljs-keyword">import</span> label_binarize
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">MetricTracker</span>:
+    <span class="hljs-string">&quot;&quot;&quot;Track epoch-wise loss and accuracy, and save them as figures and csv&quot;&quot;&quot;</span>
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, save_dir=<span class="hljs-string">&quot;results&quot;</span></span>):
+        self.save_dir = save_dir
+        os.makedirs(self.save_dir, exist_ok=<span class="hljs-literal">True</span>)
+        self.history = {
+            <span class="hljs-string">&#x27;epoch&#x27;</span>: [], <span class="hljs-string">&#x27;train_loss&#x27;</span>: [], <span class="hljs-string">&#x27;val_loss&#x27;</span>: [], 
+            <span class="hljs-string">&#x27;train_acc&#x27;</span>: [], <span class="hljs-string">&#x27;val_acc&#x27;</span>: []
+        }
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">update</span>(<span class="hljs-params">self, epoch, train_loss, val_loss, train_acc, val_acc</span>):
+        self.history[<span class="hljs-string">&#x27;epoch&#x27;</span>].append(epoch)
+        self.history[<span class="hljs-string">&#x27;train_loss&#x27;</span>].append(train_loss)
+        self.history[<span class="hljs-string">&#x27;val_loss&#x27;</span>].append(val_loss)
+        self.history[<span class="hljs-string">&#x27;train_acc&#x27;</span>].append(train_acc)
+        self.history[<span class="hljs-string">&#x27;val_acc&#x27;</span>].append(val_acc)
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">save_and_plot</span>(<span class="hljs-params">self</span>):
+        <span class="hljs-comment"># CSV</span>
+        df = pd.DataFrame(self.history)
+        csv_path = os.path.join(self.save_dir, <span class="hljs-string">&quot;training_history.csv&quot;</span>)
+        df.to_csv(csv_path, index=<span class="hljs-literal">False</span>)
+
+        <span class="hljs-comment"># Loss curve figure</span>
+        plt.figure(figsize=(<span class="hljs-number">10</span>, <span class="hljs-number">5</span>))
+        plt.plot(self.history[<span class="hljs-string">&#x27;epoch&#x27;</span>], self.history[<span class="hljs-string">&#x27;train_loss&#x27;</span>], label=<span class="hljs-string">&#x27;Train Loss&#x27;</span>)
+        plt.plot(self.history[<span class="hljs-string">&#x27;epoch&#x27;</span>], self.history[<span class="hljs-string">&#x27;val_loss&#x27;</span>], label=<span class="hljs-string">&#x27;Val Loss&#x27;</span>)
+        plt.title(<span class="hljs-string">&#x27;Loss Curve&#x27;</span>)
+        plt.xlabel(<span class="hljs-string">&#x27;Epochs&#x27;</span>)
+        plt.ylabel(<span class="hljs-string">&#x27;Loss&#x27;</span>)
+        plt.legend()
+        plt.grid(<span class="hljs-literal">True</span>)
+        plt.savefig(os.path.join(self.save_dir, <span class="hljs-string">&quot;loss_curve.png&quot;</span>))
+        plt.close()
+
+        <span class="hljs-comment"># Accuracy Curve figure</span>
+        plt.figure(figsize=(<span class="hljs-number">10</span>, <span class="hljs-number">5</span>))
+        plt.plot(self.history[<span class="hljs-string">&#x27;epoch&#x27;</span>], self.history[<span class="hljs-string">&#x27;train_acc&#x27;</span>], label=<span class="hljs-string">&#x27;Train Acc&#x27;</span>)
+        plt.plot(self.history[<span class="hljs-string">&#x27;epoch&#x27;</span>], self.history[<span class="hljs-string">&#x27;val_acc&#x27;</span>], label=<span class="hljs-string">&#x27;Val Acc&#x27;</span>)
+        plt.title(<span class="hljs-string">&#x27;Accuracy Curve&#x27;</span>)
+        plt.xlabel(<span class="hljs-string">&#x27;Epochs&#x27;</span>)
+        plt.ylabel(<span class="hljs-string">&#x27;Accuracy&#x27;</span>)
+        plt.legend()
+        plt.grid(<span class="hljs-literal">True</span>)
+        plt.savefig(os.path.join(self.save_dir, <span class="hljs-string">&quot;accuracy_curve.png&quot;</span>))
+        plt.close()
+
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">ModelEvaluator</span>:
+    <span class="hljs-string">&quot;&quot;&quot;Generate Report, Confusion Matrix, ROC, PR Curve based on the model&#x27;s prediction&quot;&quot;&quot;</span>
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, class_names, save_dir=<span class="hljs-string">&quot;results&quot;</span></span>):
+        self.class_names = class_names
+        self.num_classes = <span class="hljs-built_in">len</span>(class_names)
+        self.save_dir = save_dir
+        os.makedirs(self.save_dir, exist_ok=<span class="hljs-literal">True</span>)
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">evaluate</span>(<span class="hljs-params">self, y_true, y_pred, y_prob</span>):
+        <span class="hljs-string">&quot;&quot;&quot;
+        y_true: GT label (1D Array)
+        y_pred: Predicted label (1D Array)
+        y_prob: Predicted class probabilities (2D Array, N x C)
+        &quot;&quot;&quot;</span>
+        self._save_classification_report(y_true, y_pred)
+        self._plot_confusion_matrix(y_true, y_pred)
+        self._plot_roc_curve(y_true, y_prob)
+        self._plot_pr_curve(y_true, y_prob)
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">_save_classification_report</span>(<span class="hljs-params">self, y_true, y_pred</span>):
+        <span class="hljs-comment"># Save Classification Report as .txt</span>
+        report = classification_report(y_true, y_pred, target_names=self.class_names, digits=<span class="hljs-number">4</span>)
+        <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(os.path.join(self.save_dir, <span class="hljs-string">&quot;classification_report.txt&quot;</span>), <span class="hljs-string">&quot;w&quot;</span>) <span class="hljs-keyword">as</span> f:
+            f.write(report)
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">_plot_confusion_matrix</span>(<span class="hljs-params">self, y_true, y_pred</span>):
+        cm = confusion_matrix(y_true, y_pred)
+        plt.figure(figsize=(<span class="hljs-number">8</span>, <span class="hljs-number">6</span>))
+        sns.heatmap(cm, annot=<span class="hljs-literal">True</span>, fmt=<span class="hljs-string">&#x27;d&#x27;</span>, cmap=<span class="hljs-string">&#x27;Blues&#x27;</span>, xticklabels=self.class_names, yticklabels=self.class_names)
+        plt.title(<span class="hljs-string">&#x27;Confusion Matrix&#x27;</span>)
+        plt.ylabel(<span class="hljs-string">&#x27;True Label&#x27;</span>)
+        plt.xlabel(<span class="hljs-string">&#x27;Predicted Label&#x27;</span>)
+        plt.savefig(os.path.join(self.save_dir, <span class="hljs-string">&quot;confusion_matrix.png&quot;</span>))
+        plt.close()
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">_plot_roc_curve</span>(<span class="hljs-params">self, y_true, y_prob</span>):
+        y_true_bin = label_binarize(y_true, classes=<span class="hljs-built_in">range</span>(self.num_classes))
+        plt.figure(figsize=(<span class="hljs-number">8</span>, <span class="hljs-number">6</span>))
+        
+        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(self.num_classes):
+            fpr, tpr, _ = roc_curve(y_true_bin[:, i], y_prob[:, i])
+            roc_auc = auc(fpr, tpr)
+            plt.plot(fpr, tpr, label=<span class="hljs-string">f&#x27;<span class="hljs-subst">{self.class_names[i]}</span> (AUC = <span class="hljs-subst">{roc_auc:<span class="hljs-number">.4</span>f}</span>)&#x27;</span>)
+
+        plt.plot([<span class="hljs-number">0</span>, <span class="hljs-number">1</span>], [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>], <span class="hljs-string">&#x27;k--&#x27;</span>, label=<span class="hljs-string">&#x27;Random&#x27;</span>)
+        plt.xlim([<span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>])
+        plt.ylim([<span class="hljs-number">0.0</span>, <span class="hljs-number">1.05</span>])
+        plt.xlabel(<span class="hljs-string">&#x27;False Positive Rate (1 - Specificity)&#x27;</span>)
+        plt.ylabel(<span class="hljs-string">&#x27;True Positive Rate (Sensitivity)&#x27;</span>)
+        plt.title(<span class="hljs-string">&#x27;Receiver Operating Characteristic (ROC) Curve&#x27;</span>)
+        plt.legend(loc=<span class="hljs-string">&quot;lower right&quot;</span>)
+        plt.grid(<span class="hljs-literal">True</span>)
+        plt.savefig(os.path.join(self.save_dir, <span class="hljs-string">&quot;roc_curve.png&quot;</span>))
+        plt.close()
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">_plot_pr_curve</span>(<span class="hljs-params">self, y_true, y_prob</span>):
+        y_true_bin = label_binarize(y_true, classes=<span class="hljs-built_in">range</span>(self.num_classes))
+        plt.figure(figsize=(<span class="hljs-number">8</span>, <span class="hljs-number">6</span>))
+        
+        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(self.num_classes):
+            precision, recall, _ = precision_recall_curve(y_true_bin[:, i], y_prob[:, i])
+            plt.plot(recall, precision, label=<span class="hljs-string">f&#x27;<span class="hljs-subst">{self.class_names[i]}</span>&#x27;</span>)
+
+        plt.xlabel(<span class="hljs-string">&#x27;Recall (Sensitivity)&#x27;</span>)
+        plt.ylabel(<span class="hljs-string">&#x27;Precision&#x27;</span>)
+        plt.title(<span class="hljs-string">&#x27;Precision-Recall (PR) Curve&#x27;</span>)
+        plt.legend(loc=<span class="hljs-string">&quot;lower left&quot;</span>)
+        plt.grid(<span class="hljs-literal">True</span>)
+        plt.savefig(os.path.join(self.save_dir, <span class="hljs-string">&quot;pr_curve.png&quot;</span>))
+        plt.close()
+
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">FeatureMapLogger</span>:
+    <span class="hljs-string">&quot;&quot;&quot;Extract and visualize Intermediate Feature Map of specified layer&quot;&quot;&quot;</span>
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, module, save_dir=<span class="hljs-string">&quot;results/feature_maps&quot;</span></span>):
+        self.save_dir = save_dir
+        os.makedirs(self.save_dir, exist_ok=<span class="hljs-literal">True</span>)
+        self.feature_map = <span class="hljs-literal">None</span>
+        self.hook = module.register_forward_hook(self._hook_fn)
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">_hook_fn</span>(<span class="hljs-params">self, module, <span class="hljs-built_in">input</span>, output</span>):
+        <span class="hljs-comment"># Save 1st sample&#x27;s feature map only (Channels, H, W)</span>
+        self.feature_map = output[<span class="hljs-number">0</span>].detach().cpu()
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">plot_feature_map</span>(<span class="hljs-params">self, epoch_or_name, num_channels=<span class="hljs-number">16</span></span>):
+        <span class="hljs-string">&quot;&quot;&quot;Visualize saved feature map&#x27;s first few channels&quot;&quot;&quot;</span>
+        <span class="hljs-keyword">if</span> self.feature_map <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:
+            <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Feature map is empty. Run a forward pass first.&quot;</span>)
+            <span class="hljs-keyword">return</span>
+            
+        c, h, w = self.feature_map.shape
+        plot_c = <span class="hljs-built_in">min</span>(c, num_channels)
+        
+        fig, axes = plt.subplots(<span class="hljs-built_in">int</span>(np.ceil(plot_c/<span class="hljs-number">4</span>)), <span class="hljs-number">4</span>, figsize=(<span class="hljs-number">12</span>, <span class="hljs-number">12</span>))
+        fig.suptitle(<span class="hljs-string">f&quot;Feature Maps at <span class="hljs-subst">{epoch_or_name}</span>&quot;</span>, fontsize=<span class="hljs-number">16</span>)
+        
+        <span class="hljs-keyword">for</span> i, ax <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(axes.flat):
+            <span class="hljs-keyword">if</span> i &lt; plot_c:
+                ax.imshow(self.feature_map[i].numpy(), cmap=<span class="hljs-string">&#x27;viridis&#x27;</span>)
+                ax.axis(<span class="hljs-string">&#x27;off&#x27;</span>)
+            <span class="hljs-keyword">else</span>:
+                ax.axis(<span class="hljs-string">&#x27;off&#x27;</span>)
+                
+        plt.tight_layout()
+        plt.savefig(os.path.join(self.save_dir, <span class="hljs-string">f&quot;feature_map_<span class="hljs-subst">{epoch_or_name}</span>.png&quot;</span>))
+        plt.close()
+
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">remove_hook</span>(<span class="hljs-params">self</span>):
+        self.hook.remove()
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">log_parameter_histograms</span>(<span class="hljs-params">model, epoch, save_dir=<span class="hljs-string">&quot;results/histograms&quot;</span></span>):
+    <span class="hljs-string">&quot;&quot;&quot;Save model weights&#x27; histograms&quot;&quot;&quot;</span>
+    os.makedirs(save_dir, exist_ok=<span class="hljs-literal">True</span>)
+    plt.figure(figsize=(<span class="hljs-number">15</span>, <span class="hljs-number">10</span>))
+    
+    <span class="hljs-comment"># Only visualize Conv2d and Linear layers&#x27; weights</span>
+    params = [p.detach().cpu().numpy().flatten() <span class="hljs-keyword">for</span> n, p <span class="hljs-keyword">in</span> model.named_parameters() 
+              <span class="hljs-keyword">if</span> p.requires_grad <span class="hljs-keyword">and</span> (<span class="hljs-string">&#x27;weight&#x27;</span> <span class="hljs-keyword">in</span> n) <span class="hljs-keyword">and</span> (<span class="hljs-string">&#x27;conv&#x27;</span> <span class="hljs-keyword">in</span> n <span class="hljs-keyword">or</span> <span class="hljs-string">&#x27;fc&#x27;</span> <span class="hljs-keyword">in</span> n <span class="hljs-keyword">or</span> <span class="hljs-string">&#x27;classifier&#x27;</span> <span class="hljs-keyword">in</span> n)]
+    
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> params:
+        <span class="hljs-keyword">return</span>
+        
+    <span class="hljs-keyword">for</span> i, p <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(params[:<span class="hljs-number">6</span>]):  <span class="hljs-comment"># Draw first 6 weights</span>
+        plt.subplot(<span class="hljs-number">2</span>, <span class="hljs-number">3</span>, i + <span class="hljs-number">1</span>)
+        sns.histplot(p, bins=<span class="hljs-number">50</span>, kde=<span class="hljs-literal">True</span>)
+        plt.title(<span class="hljs-string">f&#x27;Layer <span class="hljs-subst">{i+<span class="hljs-number">1</span>}</span> Weights&#x27;</span>)
+        
+    plt.suptitle(<span class="hljs-string">f&#x27;Parameter Distributions at Epoch <span class="hljs-subst">{epoch}</span>&#x27;</span>)
+    plt.tight_layout()
+    plt.savefig(os.path.join(save_dir, <span class="hljs-string">f&quot;param_hist_epoch_<span class="hljs-subst">{epoch}</span>.png&quot;</span>))
+    plt.close()
+</code></pre>
+<h2 id="mainpy"><a href="http://main.py">main.py</a></h2>
+<p>This script serves as the entry point for the entire training and validation pipeline, incorporating comprehensive logging. It parses terminal arguments via the <code>parse_args</code> function, establishes a random seed using the <code>set_seed</code> function for reproducibility, and executes the primary workflow through the <code>main</code> function. Configurable via command-line arguments, the pipeline supports various model architectures and diverse data augmentation strategies.</p>
+<pre><code class="language-py"><span class="hljs-keyword">import</span> os
+<span class="hljs-keyword">import</span> argparse
+<span class="hljs-keyword">import</span> torch
+<span class="hljs-keyword">import</span> torch.nn <span class="hljs-keyword">as</span> nn
+<span class="hljs-keyword">import</span> torch.optim <span class="hljs-keyword">as</span> optim
+<span class="hljs-keyword">from</span> torchvision <span class="hljs-keyword">import</span> transforms
+
+<span class="hljs-keyword">from</span> dataset <span class="hljs-keyword">import</span> load_data, get_loaders
+<span class="hljs-keyword">from</span> models <span class="hljs-keyword">import</span> MedicalImageClassifier
+<span class="hljs-keyword">from</span> train <span class="hljs-keyword">import</span> Trainer
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">parse_args</span>():
+    parser = argparse.ArgumentParser(description=<span class="hljs-string">&quot;AI4MIA Week5: COVID-19 Image Classification Project&quot;</span>)
+    
+    <span class="hljs-comment"># Directory configurations</span>
+    parser.add_argument(<span class="hljs-string">&#x27;--raw_dir&#x27;</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">str</span>, default=<span class="hljs-string">&#x27;dataset/raw&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;Path to raw dataset directory&#x27;</span>)
+    parser.add_argument(<span class="hljs-string">&#x27;--processed_dir&#x27;</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">str</span>, default=<span class="hljs-string">&#x27;dataset/processed&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;Path to preprocessed dataset directory&#x27;</span>)
+    parser.add_argument(<span class="hljs-string">&#x27;--results_dir&#x27;</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">str</span>, default=<span class="hljs-string">&#x27;results&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;Path to root directory of resultant directories&#x27;</span>)
+    
+    <span class="hljs-comment"># Data loading configurations</span>
+    parser.add_argument(<span class="hljs-string">&#x27;--use_saved&#x27;</span>, action=<span class="hljs-string">&#x27;store_true&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;Use preprocessed .pt tensor dataset&#x27;</span>)
+    parser.add_argument(<span class="hljs-string">&#x27;--save_processed&#x27;</span>, action=<span class="hljs-string">&#x27;store_true&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;Save raw data to .pt tensors&#x27;</span>)
+    parser.add_argument(<span class="hljs-string">&#x27;--num_workers&#x27;</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">int</span>, default=<span class="hljs-number">4</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;DataLoader parameter&#x27;</span>)
+    parser.add_argument(<span class="hljs-string">&#x27;--augment&#x27;</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">str</span>, default=<span class="hljs-string">&#x27;none&#x27;</span>,
+                        choices=[<span class="hljs-string">&#x27;none&#x27;</span>, <span class="hljs-string">&#x27;all&#x27;</span>, <span class="hljs-string">&#x27;flip&#x27;</span>, <span class="hljs-string">&#x27;rotation&#x27;</span>, <span class="hljs-string">&#x27;crop&#x27;</span>], <span class="hljs-built_in">help</span>=<span class="hljs-string">&quot;Data augmentation to train with more data. &#x27;all&#x27; means all possible augmentations. Default is &#x27;none&#x27;&quot;</span>)
+    
+    <span class="hljs-comment"># Model selection and hyperparameters</span>
+    parser.add_argument(<span class="hljs-string">&#x27;--model_name&#x27;</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">str</span>, default=<span class="hljs-string">&#x27;resnet&#x27;</span>, 
+                        choices=[<span class="hljs-string">&#x27;resnet&#x27;</span>, <span class="hljs-string">&#x27;alexnet&#x27;</span>, <span class="hljs-string">&#x27;googlenet&#x27;</span>, <span class="hljs-string">&#x27;all&#x27;</span>], <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;Model classes to train and validation, &quot;all&quot; means all possible models&#x27;</span>)
+    parser.add_argument(<span class="hljs-string">&#x27;--scratch&#x27;</span>, action=<span class="hljs-string">&#x27;store_true&#x27;</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;Not to use pretrained weights and to train models from scratches&#x27;</span>)
+    parser.add_argument(<span class="hljs-string">&#x27;--epochs&#x27;</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">int</span>, default=<span class="hljs-number">20</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;Maximum epochs to train&#x27;</span>)
+    parser.add_argument(<span class="hljs-string">&#x27;--batch_size&#x27;</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">int</span>, default=<span class="hljs-number">32</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;The number of samples in a batch&#x27;</span>)
+    parser.add_argument(<span class="hljs-string">&#x27;--lr&#x27;</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">float</span>, default=<span class="hljs-number">0.001</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;Learning Rate&#x27;</span>)
+    parser.add_argument(<span class="hljs-string">&#x27;--seed&#x27;</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">int</span>, default=<span class="hljs-number">42</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;Random seed for reproducibility&#x27;</span>)
+    
+    <span class="hljs-keyword">return</span> parser.parse_args()
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">set_seed</span>(<span class="hljs-params">seed</span>):
+    <span class="hljs-string">&quot;&quot;&quot;Random seed setting for reproducibility&quot;&quot;&quot;</span>
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    torch.backends.cudnn.deterministic = <span class="hljs-literal">True</span>
+    torch.backends.cudnn.benchmark = <span class="hljs-literal">False</span>
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">main</span>():
+    args = parse_args()
+    set_seed(args.seed)
+    
+    device = torch.device(<span class="hljs-string">&quot;cuda&quot;</span> <span class="hljs-keyword">if</span> torch.cuda.is_available() <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;cpu&quot;</span>)
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;[*] Device: <span class="hljs-subst">{device}</span>&quot;</span>)
+    
+    <span class="hljs-comment"># 1. Base resize (applied to all conditions)</span>
+    transform_list = [transforms.Resize((<span class="hljs-number">224</span>, <span class="hljs-number">224</span>))]
+
+    <span class="hljs-comment"># 2. Conditional augmentations</span>
+    <span class="hljs-keyword">if</span> args.augment == <span class="hljs-string">&quot;flip&quot;</span>:
+        transform_list.append(transforms.RandomHorizontalFlip())
+    <span class="hljs-keyword">elif</span> args.augment == <span class="hljs-string">&quot;rotation&quot;</span>:
+        transform_list.append(transforms.RandomRotation(<span class="hljs-number">15</span>))
+    <span class="hljs-keyword">elif</span> args.augment == <span class="hljs-string">&quot;crop&quot;</span>:
+        transform_list.append(transforms.RandomResizedCrop(<span class="hljs-number">224</span>))
+    <span class="hljs-keyword">elif</span> args.augment == <span class="hljs-string">&quot;all&quot;</span>:
+        transform_list.extend([
+            transforms.RandomHorizontalFlip(),
+            transforms.RandomRotation(<span class="hljs-number">15</span>),
+            transforms.RandomResizedCrop(<span class="hljs-number">224</span>)
+        ])
+    <span class="hljs-keyword">elif</span> args.augment == <span class="hljs-string">&quot;none&quot;</span>:
+        <span class="hljs-keyword">pass</span>  <span class="hljs-comment"># Do nothing</span>
+    <span class="hljs-keyword">else</span>:
+        <span class="hljs-keyword">raise</span> ValueError(<span class="hljs-string">f&quot;Unsupported augmentation option: <span class="hljs-subst">{args.augment}</span>&quot;</span>)
+
+    <span class="hljs-comment"># 3. Tensor conversion and Normalization</span>
+    transform_list.extend([
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[<span class="hljs-number">0.485</span>, <span class="hljs-number">0.456</span>, <span class="hljs-number">0.406</span>], std=[<span class="hljs-number">0.229</span>, <span class="hljs-number">0.224</span>, <span class="hljs-number">0.225</span>])
+    ])
+
+    <span class="hljs-comment"># 4. Pass the list to Compose</span>
+    transform = transforms.Compose(transform_list)
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{args.augment}</span> is applied for data augmentation.&quot;</span>)
+
+    dataset = load_data(
+        raw_dir=args.raw_dir,
+        processed_dir=args.processed_dir + <span class="hljs-string">&quot;_&quot;</span> + args.augment,
+        transform=transform,
+        use_saved=args.use_saved,
+        save_processed=args.save_processed
+    )    
+    split_ratio = {<span class="hljs-string">&#x27;train&#x27;</span>: <span class="hljs-number">0.8</span>, <span class="hljs-string">&#x27;val&#x27;</span>: <span class="hljs-number">0.1</span>, <span class="hljs-string">&#x27;test&#x27;</span>: <span class="hljs-number">0.1</span>}
+    loaders = get_loaders(
+        dataset, 
+        split_ratio=split_ratio, 
+        batch_size=args.batch_size, 
+        num_workers=args.num_workers
+    )
+    
+    class_names = [<span class="hljs-string">&#x27;Normal&#x27;</span>, <span class="hljs-string">&#x27;Viral Pneumonia&#x27;</span>, <span class="hljs-string">&#x27;COVID-19&#x27;</span>]
+    num_classes = <span class="hljs-built_in">len</span>(class_names)
+    
+    <span class="hljs-keyword">if</span> args.model_name == <span class="hljs-string">&#x27;all&#x27;</span>:
+        models_to_run = [<span class="hljs-string">&#x27;resnet&#x27;</span>, <span class="hljs-string">&#x27;alexnet&#x27;</span>, <span class="hljs-string">&#x27;googlenet&#x27;</span>]
+        modes = [<span class="hljs-literal">False</span>, <span class="hljs-literal">True</span>]  <span class="hljs-comment"># False = Pretrained, True = Scratch</span>
+        runs = [(m, s) <span class="hljs-keyword">for</span> m <span class="hljs-keyword">in</span> models_to_run <span class="hljs-keyword">for</span> s <span class="hljs-keyword">in</span> modes]
+    <span class="hljs-keyword">else</span>:
+        runs = [(args.model_name, args.scratch)]
+
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;[*] Total <span class="hljs-subst">{<span class="hljs-built_in">len</span>(runs)}</span> number of training sessions will run sequentially.\n&quot;</span> + <span class="hljs-string">&quot;=&quot;</span>*<span class="hljs-number">50</span>)
+
+    <span class="hljs-keyword">for</span> run_idx, (model_name, is_scratch) <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(runs, <span class="hljs-number">1</span>):
+        pretrained = <span class="hljs-keyword">not</span> is_scratch
+        mode_str = <span class="hljs-string">&quot;scratch&quot;</span> <span class="hljs-keyword">if</span> is_scratch <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;pretrained&quot;</span>
+        mode_str = mode_str + <span class="hljs-string">f&quot;_<span class="hljs-subst">{args.augment}</span>&quot;</span>
+        run_name = <span class="hljs-string">f&quot;<span class="hljs-subst">{model_name}</span>_<span class="hljs-subst">{mode_str}</span>&quot;</span>
+        
+        <span class="hljs-comment"># Setting seperated directories for each models</span>
+        current_save_dir = os.path.join(args.results_dir, run_name)
+        os.makedirs(current_save_dir, exist_ok=<span class="hljs-literal">True</span>)
+        
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;\n[<span class="hljs-subst">{run_idx}</span>/<span class="hljs-subst">{<span class="hljs-built_in">len</span>(runs)}</span>] 🚀 Session Start: <span class="hljs-subst">{run_name.upper()}</span>&quot;</span>)
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot; - model_name: <span class="hljs-subst">{model_name}</span>&quot;</span>)
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot; - Pretrained: <span class="hljs-subst">{pretrained}</span>&quot;</span>)
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot; - Results Path: <span class="hljs-subst">{current_save_dir}</span>&quot;</span>)
+        
+        model = MedicalImageClassifier(model_name=model_name, pretrained=pretrained, num_classes=num_classes)
+        
+        <span class="hljs-comment"># 1st convolutional layer selection logic to extract feature maps</span>
+        feature_layer = <span class="hljs-literal">None</span>
+        <span class="hljs-keyword">if</span> model_name == <span class="hljs-string">&#x27;resnet&#x27;</span>:
+            feature_layer = model.model.conv1
+        <span class="hljs-keyword">elif</span> model_name == <span class="hljs-string">&#x27;alexnet&#x27;</span>:
+            feature_layer = model.model.features[<span class="hljs-number">0</span>]
+        <span class="hljs-keyword">elif</span> model_name == <span class="hljs-string">&#x27;googlenet&#x27;</span>:
+            feature_layer = model.model.conv1.conv
+        
+        criterion = nn.CrossEntropyLoss()
+        optimizer = optim.Adam(model.parameters(), lr=args.lr)
+        
+        trainer = Trainer(
+            model=model,
+            train_loader=loaders[<span class="hljs-string">&#x27;train_loader&#x27;</span>],
+            val_loader=loaders[<span class="hljs-string">&#x27;val_loader&#x27;</span>],
+            criterion=criterion,
+            optimizer=optimizer,
+            device=device,
+            class_names=class_names,
+            num_epochs=args.epochs,
+            save_dir=current_save_dir,
+            feature_layer=feature_layer
+        )
+        
+        trainer.fit()
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;[<span class="hljs-subst">{run_idx}</span>/<span class="hljs-subst">{<span class="hljs-built_in">len</span>(runs)}</span>] ✅ Session completed: <span class="hljs-subst">{run_name.upper()}</span>&quot;</span>)
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;=&quot;</span>*<span class="hljs-number">50</span>)
+        
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;[*] Every sessions is now finished.&quot;</span>)
+
+<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:
+    main()
+</code></pre>
+<h1 id="scratch-vs-pretrained">Scratch vs Pretrained</h1>
+<h2 id="alexnet">AlexNet</h2>
+<p>AlexNet is an iconic model that won the ImageNet challenge in 2014, sparking the current deep learning-based AI boom using CNNs on NVIDIA GPGPUs.</p>
+<h3 id="pretrained-alexnet">Pretrained AlexNet</h3>
+<p>Despite being pretrained on ImageNet, it completely failed to generalize to the COVID-19 CXR dataset. This led the model to predominantly predict the &quot;Normal&quot; class, which has a dominant number of samples.</p>
+<p><img src="file:///c:\Users\ttaaa\Desktop\2026_2학기\AI4MIA\assignment1\source\figures\alexnet_pretrained_none_accuracy_curve.png" alt="alexnet_pt_acc"></p>
+<p><img src="file:///c:\Users\ttaaa\Desktop\2026_2학기\AI4MIA\assignment1\source\figures\alexnet_pretrained_none_confusion_matrix.png" alt="alexnet_pt_conf"></p>
+<p>The loss curve indicates rapid saturation, preventing any further performance improvements.</p>
+<p><img src="file:///c:\Users\ttaaa\Desktop\2026_2학기\AI4MIA\assignment1\source\figures\alexnet_pretrained_none_loss_curve.png" alt="alexnet_pt_loss"></p>
+<p>The ROC curve clearly reveals that AlexNet failed to learn from the CXR data.</p>
+<p><img src="file:///c:\Users\ttaaa\Desktop\2026_2학기\AI4MIA\assignment1\source\figures\alexnet_pretrained_none_roc_curve.png" alt="alexnet_pt_roc"></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Class</th>
+<th style="text-align:center">Precision</th>
+<th style="text-align:center">Recall</th>
+<th style="text-align:center">F1-Score</th>
+<th style="text-align:center">Support</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Normal</strong></td>
+<td style="text-align:center">0.6726</td>
+<td style="text-align:center">1.0000</td>
+<td style="text-align:center">0.8043</td>
+<td style="text-align:center">1019</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Viral Pneumonia</strong></td>
+<td style="text-align:center">0.0000</td>
+<td style="text-align:center">0.0000</td>
+<td style="text-align:center">0.0000</td>
+<td style="text-align:center">135</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>COVID-19</strong></td>
+<td style="text-align:center">0.0000</td>
+<td style="text-align:center">0.0000</td>
+<td style="text-align:center">0.0000</td>
+<td style="text-align:center">361</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Accuracy</strong></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"><strong>0.6726</strong></td>
+<td style="text-align:center">1515</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Macro Avg</strong></td>
+<td style="text-align:center">0.2242</td>
+<td style="text-align:center">0.3333</td>
+<td style="text-align:center">0.2681</td>
+<td style="text-align:center">1515</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Weighted Avg</strong></td>
+<td style="text-align:center">0.4524</td>
+<td style="text-align:center">0.6726</td>
+<td style="text-align:center">0.5410</td>
+<td style="text-align:center">1515</td>
+</tr>
+</tbody>
+</table>
+<h3 id="trained-from-scratch-alexnet">Trained-from-scratch AlexNet</h3>
+<p>Based on the results below, the problem lies not in the architecture of AlexNet, but in its overfitting to the ImageNet dataset, which consists of natural images rather than CXR images.</p>
+<p><img src="file:///c:\Users\ttaaa\Desktop\2026_2학기\AI4MIA\assignment1\source\figures\alexnet_scratch_none_accuracy_curve.png" alt="alexnet_sc_acc"></p>
+<p><img src="file:///c:\Users\ttaaa\Desktop\2026_2학기\AI4MIA\assignment1\source\figures\alexnet_scratch_none_confusion_matrix.png" alt="alexnet_sc_conf"></p>
+<p>The loss curve for this AlexNet model shows that it has not yet saturated.</p>
+<p><img src="file:///c:\Users\ttaaa\Desktop\2026_2학기\AI4MIA\assignment1\source\figures\alexnet_scratch_none_loss_curve.png" alt="alexnet_sc_loss"></p>
+<p>The ROC curve is extraordinarily improved compared to the pretrained version.</p>
+<p><img src="file:///c:\Users\ttaaa\Desktop\2026_2학기\AI4MIA\assignment1\source\figures\alexnet_scratch_none_roc_curve.png" alt="alexnet_sc_roc"></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Class</th>
+<th style="text-align:center">Precision</th>
+<th style="text-align:center">Recall</th>
+<th style="text-align:center">F1-Score</th>
+<th style="text-align:center">Support</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Normal</strong></td>
+<td style="text-align:center">0.9576</td>
+<td style="text-align:center">0.9745</td>
+<td style="text-align:center">0.9660</td>
+<td style="text-align:center">1019</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Viral Pneumonia</strong></td>
+<td style="text-align:center">0.9769</td>
+<td style="text-align:center">0.9407</td>
+<td style="text-align:center">0.9585</td>
+<td style="text-align:center">135</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>COVID-19</strong></td>
+<td style="text-align:center">0.9253</td>
+<td style="text-align:center">0.8920</td>
+<td style="text-align:center">0.9083</td>
+<td style="text-align:center">361</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Accuracy</strong></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"><strong>0.9518</strong></td>
+<td style="text-align:center">1515</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Macro Avg</strong></td>
+<td style="text-align:center">0.9533</td>
+<td style="text-align:center">0.9357</td>
+<td style="text-align:center">0.9443</td>
+<td style="text-align:center">1515</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Weighted Avg</strong></td>
+<td style="text-align:center">0.9516</td>
+<td style="text-align:center">0.9518</td>
+<td style="text-align:center">0.9516</td>
+<td style="text-align:center">1515</td>
+</tr>
+</tbody>
+</table>
+<h2 id="googlenet">GoogLeNet</h2>
+<h3 id="pretrained-googlenet">Pretrained GoogLeNet</h3>
+<p>GoogLeNet demonstrated more robust performance on the CXR dataset compared to AlexNet. However, since the CXR dataset is still out-of-distribution for a model pretrained on natural images, GoogLeNet continuously exhibited instability during training.</p>
+<p><img src="file:///c:\Users\ttaaa\Desktop\2026_2학기\AI4MIA\assignment1\source\figures\googlenet_pretrained_none_accuracy_curve.png" alt="googlent_sc_acc"></p>
+<p><img src="file:///c:\Users\ttaaa\Desktop\2026_2학기\AI4MIA\assignment1\source\figures\googlenet_pretrained_none_confusion_matrix.png" alt="googlenet_sc_conf"></p>
+<p>The loss curve shows distribution shifts in the parameter space at the 6th, 13th, and 19th epochs.</p>
+<p><img src="file:///c:\Users\ttaaa\Desktop\2026_2학기\AI4MIA\assignment1\source\figures\googlenet_pretrained_none_loss_curve.png" alt="googlenet_sc_loss"></p>
+<p>The ROC curve is significantly better than that of AlexNet.</p>
+<p><img src="file:///c:\Users\ttaaa\Desktop\2026_2학기\AI4MIA\assignment1\source\figures\googlenet_pretrained_none_roc_curve.png" alt="googlenet_sc_roc"></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Class</th>
+<th style="text-align:center">Precision</th>
+<th style="text-align:center">Recall</th>
+<th style="text-align:center">F1-Score</th>
+<th style="text-align:center">Support</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Normal</strong></td>
+<td style="text-align:center">0.9980</td>
+<td style="text-align:center">0.9951</td>
+<td style="text-align:center">0.9966</td>
+<td style="text-align:center">1019</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Viral Pneumonia</strong></td>
+<td style="text-align:center">0.9925</td>
+<td style="text-align:center">0.9852</td>
+<td style="text-align:center">0.9888</td>
+<td style="text-align:center">135</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>COVID-19</strong></td>
+<td style="text-align:center">0.9863</td>
+<td style="text-align:center">0.9972</td>
+<td style="text-align:center">0.9917</td>
+<td style="text-align:center">361</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Accuracy</strong></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"><strong>0.9947</strong></td>
+<td style="text-align:center">1515</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Macro Avg</strong></td>
+<td style="text-align:center">0.9923</td>
+<td style="text-align:center">0.9925</td>
+<td style="text-align:center">0.9924</td>
+<td style="text-align:center">1515</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Weighted Avg</strong></td>
+<td style="text-align:center">0.9947</td>
+<td style="text-align:center">0.9947</td>
+<td style="text-align:center">0.9947</td>
+<td style="text-align:center">1515</td>
+</tr>
+</tbody>
+</table>
+<h3 id="trained-from-scratch-googlenet">Trained-from-scratch GoogLeNet</h3>
+<p>It appears that GoogLeNet has a larger capacity to learn from the data more stably compared to AlexNet.</p>
+<p><img src="file:///c:\Users\ttaaa\Desktop\2026_2학기\AI4MIA\assignment1\source\figures\googlenet_scratch_none_accuracy_curve.png" alt="googlent_sc_acc"></p>
+<p><img src="file:///c:\Users\ttaaa\Desktop\2026_2학기\AI4MIA\assignment1\source\figures\googlenet_scratch_none_confusion_matrix.png" alt="googlent_sc_conf"></p>
+<p>The loss curve indicates a significant distribution shift in the parameter space at the 5th epoch.</p>
+<p><img src="file:///c:\Users\ttaaa\Desktop\2026_2학기\AI4MIA\assignment1\source\figures\googlenet_scratch_none_loss_curve.png" alt="googlent_sc_loss"></p>
+<p>As expected, the ROC curve is substantially better than AlexNet's.</p>
+<p><img src="file:///c:\Users\ttaaa\Desktop\2026_2학기\AI4MIA\assignment1\source\figures\googlenet_scratch_none_roc_curve.png" alt="googlent_sc_roc"></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Class</th>
+<th style="text-align:center">Precision</th>
+<th style="text-align:center">Recall</th>
+<th style="text-align:center">F1-Score</th>
+<th style="text-align:center">Support</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Normal</strong></td>
+<td style="text-align:center">0.9776</td>
+<td style="text-align:center">0.9843</td>
+<td style="text-align:center">0.9809</td>
+<td style="text-align:center">1019</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Viral Pneumonia</strong></td>
+<td style="text-align:center">0.9429</td>
+<td style="text-align:center">0.9778</td>
+<td style="text-align:center">0.9600</td>
+<td style="text-align:center">135</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>COVID-19</strong></td>
+<td style="text-align:center">0.9742</td>
+<td style="text-align:center">0.9418</td>
+<td style="text-align:center">0.9577</td>
+<td style="text-align:center">361</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Accuracy</strong></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"><strong>0.9736</strong></td>
+<td style="text-align:center">1515</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Macro Avg</strong></td>
+<td style="text-align:center">0.9649</td>
+<td style="text-align:center">0.9680</td>
+<td style="text-align:center">0.9662</td>
+<td style="text-align:center">1515</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Weighted Avg</strong></td>
+<td style="text-align:center">0.9737</td>
+<td style="text-align:center">0.9736</td>
+<td style="text-align:center">0.9735</td>
+<td style="text-align:center">1515</td>
+</tr>
+</tbody>
+</table>
+<h1 id="raw-vs-augmented">Raw vs. Augmented</h1>
+<p>A trained-from-scratch ResNet was selected to evaluate the effects of data augmentation.</p>
+<h2 id="raw-data-based-resnet">Raw data based ResNet</h2>
+<p>ResNet demonstrated its ability to stabilize gradient perturbations through its residual connections. However, as shown in the accuracy and loss curves, this does not necessarily guarantee stability during the validation phase.</p>
+<p><img src="file:///c:\Users\ttaaa\Desktop\2026_2학기\AI4MIA\assignment1\source\figures\resnet_scratch_none_accuracy_curve.png" alt="resnet_raw_acc"></p>
+<p><img src="file:///c:\Users\ttaaa\Desktop\2026_2학기\AI4MIA\assignment1\source\figures\resnet_scratch_none_loss_curve.png" alt="resnet_raw_loss"></p>
+<p>It also appears capable of handling the class imbalance problem.</p>
+<p><img src="file:///c:\Users\ttaaa\Desktop\2026_2학기\AI4MIA\assignment1\source\figures\resnet_scratch_none_confusion_matrix.png" alt="resnet_raw_conf"></p>
+<p><img src="file:///c:\Users\ttaaa\Desktop\2026_2학기\AI4MIA\assignment1\source\figures\resnet_scratch_none_roc_curve.png" alt="resnet_raw_roc"></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Class</th>
+<th style="text-align:center">Precision</th>
+<th style="text-align:center">Recall</th>
+<th style="text-align:center">F1-Score</th>
+<th style="text-align:center">Support</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Normal</strong></td>
+<td style="text-align:center">0.9889</td>
+<td style="text-align:center">0.9617</td>
+<td style="text-align:center">0.9751</td>
+<td style="text-align:center">1019</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Viral Pneumonia</strong></td>
+<td style="text-align:center">0.9236</td>
+<td style="text-align:center">0.9852</td>
+<td style="text-align:center">0.9534</td>
+<td style="text-align:center">135</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>COVID-19</strong></td>
+<td style="text-align:center">0.9211</td>
+<td style="text-align:center">0.9695</td>
+<td style="text-align:center">0.9447</td>
+<td style="text-align:center">361</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Accuracy</strong></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"><strong>0.9657</strong></td>
+<td style="text-align:center">1515</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Macro Avg</strong></td>
+<td style="text-align:center">0.9445</td>
+<td style="text-align:center">0.9721</td>
+<td style="text-align:center">0.9577</td>
+<td style="text-align:center">1515</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Weighted Avg</strong></td>
+<td style="text-align:center">0.9669</td>
+<td style="text-align:center">0.9657</td>
+<td style="text-align:center">0.9659</td>
+<td style="text-align:center">1515</td>
+</tr>
+</tbody>
+</table>
+<h2 id="augmented-data-based-resnet">Augmented data based ResNet</h2>
+<p>Once again, the model showed stability during the training phase in both the accuracy and loss curves, but this did not translate to the validation curves. Furthermore, due to data augmentation, the performance at 20 epochs degraded. Based on the slopes of the curves, it seems the model is still in the process of learning.</p>
+<p><img src="file:///c:\Users\ttaaa\Desktop\2026_2학기\AI4MIA\assignment1\source\figures\resnet_scratch_all_accuracy_curve.png" alt="resnet_aug_acc"></p>
+<p><img src="file:///c:\Users\ttaaa\Desktop\2026_2학기\AI4MIA\assignment1\source\figures\resnet_scratch_all_loss_curve.png" alt="resnet_aug_loss"></p>
+<p>From the confusion matrix, we can infer that the augmentation had an adverse effect, particularly on the precision of the ResNet.</p>
+<p><img src="file:///c:\Users\ttaaa\Desktop\2026_2학기\AI4MIA\assignment1\source\figures\resnet_scratch_all_confusion_matrix.png" alt="resnet_aug_conf"></p>
+<p>The ROC curve also reflects this performance degradation.</p>
+<p><img src="file:///c:\Users\ttaaa\Desktop\2026_2학기\AI4MIA\assignment1\source\figures\resnet_scratch_all_roc_curve.png" alt="resnet_aug_roc"></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Class</th>
+<th style="text-align:center">Precision</th>
+<th style="text-align:center">Recall</th>
+<th style="text-align:center">F1-Score</th>
+<th style="text-align:center">Support</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Normal</strong></td>
+<td style="text-align:center">0.8999</td>
+<td style="text-align:center">0.9352</td>
+<td style="text-align:center">0.9172</td>
+<td style="text-align:center">1019</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Viral Pneumonia</strong></td>
+<td style="text-align:center">0.9681</td>
+<td style="text-align:center">0.6741</td>
+<td style="text-align:center">0.7948</td>
+<td style="text-align:center">135</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>COVID-19</strong></td>
+<td style="text-align:center">0.7873</td>
+<td style="text-align:center">0.7895</td>
+<td style="text-align:center">0.7884</td>
+<td style="text-align:center">361</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Accuracy</strong></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+<td style="text-align:center"><strong>0.8772</strong></td>
+<td style="text-align:center">1515</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Macro Avg</strong></td>
+<td style="text-align:center">0.8851</td>
+<td style="text-align:center">0.7996</td>
+<td style="text-align:center">0.8335</td>
+<td style="text-align:center">1515</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Weighted Avg</strong></td>
+<td style="text-align:center">0.8791</td>
+<td style="text-align:center">0.8772</td>
+<td style="text-align:center">0.8756</td>
+<td style="text-align:center">1515</td>
+</tr>
+</tbody>
+</table>
+
+            
+            
+        </body>
+        </html>
