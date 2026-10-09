@@ -6,8 +6,8 @@ figures/*
 */checkpoints/*
 */__pycache__/*
 src/test_results/*
-report.html
-report.md
 *.png
 *.pt
 *.pth
+report.html
+report.md
